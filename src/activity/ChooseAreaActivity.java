@@ -3,6 +3,8 @@ package activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.coolweather.app.R;
+
 import util.HttpCallbackListener;
 import util.HttpUtil;
 import util.Utility;
@@ -11,7 +13,6 @@ import model.City;
 import model.CoolWeatherDB;
 import model.County;
 import model.Province;
-import android.R;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -104,7 +105,7 @@ public class ChooseAreaActivity extends Activity {
 			titleText.setText("中国");
 			currentLevel=LEVEL_PROVINCE;
 		}else{
-			queryFormServer(null,"province");
+			queryFromServer(null,"province");
 		}
 	}
 	/**
@@ -122,7 +123,7 @@ public class ChooseAreaActivity extends Activity {
 			titleText.setText(selectedProvince.getProvinceName());
 			currentLevel=LEVEL_CITY;
 		}else{
-			queryFormServer(selectedProvince.getProvinceCode(),"city");
+			queryFromServer(selectedProvince.getProvinceCode(),"city");
 		}
 	}
 	/**
@@ -131,7 +132,7 @@ public class ChooseAreaActivity extends Activity {
 	private void queryCounties() {
 		// TODO Auto-generated method stub
 		countyList=coolWeatherDB.loadCounties(selectedCity.getId());
-		if(cityList.size()>0){
+		if(countyList.size()>0){
 			dataList.clear();
 			for(County county:countyList){
 				dataList.add(county.getCountyName());
@@ -141,7 +142,7 @@ public class ChooseAreaActivity extends Activity {
 			titleText.setText(selectedCity.getCityName());
 			currentLevel=LEVEL_COUNTY;
 		}else{
-			queryFormServer(selectedCity.getCityCode(),"county");
+			queryFromServer(selectedCity.getCityCode(),"county");
 		}
 	}
 	/**
@@ -149,7 +150,7 @@ public class ChooseAreaActivity extends Activity {
 	 * @param code
 	 * @param type
 	 */
-	private void queryFormServer(final String code, final String type) {
+	private void queryFromServer(final String code, final String type) {
 		// TODO Auto-generated method stub
 		String address;
 		if(!TextUtils.isEmpty(code)){
@@ -185,17 +186,17 @@ public class ChooseAreaActivity extends Activity {
 						}
 					});
 				}
-				@Override
-				public void onError(Exception e) {
-					//通过runOnUiThread()方法回到主线程处理逻辑
-					runOnUiThread(new Runnable(){
-						@Override
-						public void run(){
-							closeProgressDialog();
-							Toast.makeText(ChooseAreaActivity.this, "加载失败", Toast.LENGTH_SHORT).show();
-						}
-					});
-				}
+			}
+			@Override
+			public void onError(Exception e) {
+				//通过runOnUiThread()方法回到主线程处理逻辑
+				runOnUiThread(new Runnable(){
+					@Override
+					public void run(){
+						closeProgressDialog();
+						Toast.makeText(ChooseAreaActivity.this, "加载失败", Toast.LENGTH_SHORT).show();
+					}
+				});
 			}
 		});
 		
